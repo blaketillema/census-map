@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    height: 10vh;
+    width: 100vw;
+}
+
+header table {
+    width: 100vw;
+}
+
+#map { 
+    height: 90vh;
+    width: 100vw;
+}
