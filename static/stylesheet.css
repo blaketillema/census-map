@@ -1,18 +1,72 @@
 body {
+    display: flex;
+    flex-direction: column;
+
+    height: 100vh;
+    width: 100vw;
+
     margin: 0;
     padding: 0;
 }
 
-header {
-    height: 10vh;
-    width: 100vw;
+nav {
+    flex: 1;
+    display: flex;
 }
 
-header table {
-    width: 100vw;
+form {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
 }
 
-#map { 
-    height: 90vh;
-    width: 100vw;
+#submitButton {
+    flex: 2;
+}
+
+#reset {
+    flex: 1;
+}
+
+fieldset {
+    flex: 1;
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+}
+
+fieldset > input[type=radio], fieldset > input[type=checkbox] {
+    display: none;
+}
+
+fieldset > label {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    flex: 1;
+    
+    background-color: lightblue;
+    border-radius: 8px;
+    margin: 4px;
+}
+
+fieldset > input:checked + label {
+    background-color: lightgreen;
+}
+
+fieldset > input:disabled + label {
+    background-color: lightgray;
+}
+
+main { 
+    flex: 4;
+    display: flex;
+}
+
+#map {
+    flex: 1;
 }

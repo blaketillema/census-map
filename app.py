@@ -1,16 +1,17 @@
-import time
-
 from flask import Flask, render_template, request
 
-# from abs_data.data import metadata
-from abs_data.gis import SA1, SA2
+from abs_data.gis import AUS, SA1, SA2, SA3, SA4, STE
 
 
 app = Flask(__name__)
 
 levels = {
+    'AUS': AUS,
     'SA1': SA1,
-    'SA2': SA2
+    'SA2': SA2,
+    'SA3': SA3,
+    'SA4': SA4,
+    'STE': STE
 }
 
 states = {
@@ -24,30 +25,29 @@ def index():
 
 @app.route('/data')
 def data():
-    state_list = request.args.getlist('states')
-    level = request.args.get('level')
+    level = request.args.get('level', 'STE')
 
     if level not in levels:
-        return "{} not a valid level {{}}".format(level, levels.keys()), 400
+        return "{} not a valid level {{}}".format(level, levels.keys()), 404
+    
+    state_list = request.args.getlist('states')
     
     for state in state_list:
         if state not in states:
-            return "{} not a valid state {{}}".format(state, states.keys()), 400
+            return "{} not a valid state {{}}".format(state, states.keys()), 404
     
     return get_geojson(level, state_list)
 
 
 def get_geojson(level: str, state_list: list[str]):
 
-    start = time.time()
     requested_map = levels[level.upper()]
 
-    if state_list:
+    if state_list and level != 'AUS':
         out = requested_map[requested_map['STE_CODE21'].isin([str(states[state]) for state in state_list])].to_json()
     else:
         out = requested_map.to_json()
 
-    print(f'time to return {time.time() - start}')
     return out
 
 

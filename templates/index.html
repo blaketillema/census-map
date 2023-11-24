@@ -9,22 +9,30 @@
             crossorigin=""></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet.css') }}">
         <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-        <title>MAP</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <title>ABS Census Map</title>
     </head>
     <body>
         <nav>
             <form id="filter">
                 <fieldset>
-                    {% for state in states %}
-                        <input type="checkbox" name="states" value="{{ state }}">{{ state }}<br>
+                    {% for level in levels %}
+                        {% if loop.index == 1 %}
+                            <input class="level-selector" id="level{{ level }}" type="radio" name="level" value="{{ level }}" checked><label for="level{{ level }}">{{ level }}</label>
+                        {% else %}
+                            <input class="level-selector" id="level{{ level }}" type="radio" name="level" value="{{ level }}"><label for="level{{ level }}">{{ level }}</label>
+                        {% endif %}
                     {% endfor %}
                 </fieldset>
                 <fieldset>
-                    {% for level in levels %}
-                        <input type="radio" name="level" value="{{ level }}" checked>{{ level }}<br>
+                    {% for state in states %}
+                        <input class="state-selector" id="state{{ state }}" type="checkbox" name="states" value="{{ state }}" disabled><label for="state{{ state }}">{{ state }}</label>
                     {% endfor %}
                 </fieldset>
-                <input type="submit" value="Update">
+                <fieldset>
+                    <input id="submitButton" type="submit" value="Update">
+                    <button id="reset">Reset Zoom</button>
+                </fieldset>
             </form>
         </nav>
         <main>
