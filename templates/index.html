@@ -30,6 +30,18 @@
                     {% endfor %}
                 </fieldset>
                 <fieldset>
+                    <select name="statistic">
+                        <option value="">Select target statistic</option>
+                        {% for datapack, fields in datapacks.items() %}
+                            <optgroup label="{{ datapack }}">
+                                {% for short, long in fields.items() %}
+                                    <option value="{{ datapack }}:{{ short }}">{{ long.replace('_', ' ') }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
+                </fieldset>
+                <fieldset>
                     <input id="submitButton" type="submit" value="Update">
                     <button id="reset">Reset Zoom</button>
                 </fieldset>

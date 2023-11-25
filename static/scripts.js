@@ -1,5 +1,6 @@
 var map;
 var geoJsonLayer;
+var colours = {}
 
 window.onload = function() {
     initMap();
@@ -25,11 +26,25 @@ function onClicks() {
             elem.addEventListener('click', enableStateSelectors);
         }
     }
-    document.getElementById('reset').addEventListener('click', () => map.setView([-28.153, 133.275], 5));
+    document.getElementById('reset').addEventListener('click', (event) => {
+        event.preventDefault();
+        map.setView([-28.153, 133.275], 5);
+    });
 }
 
 function initialLoad() {
     document.getElementById('filter').dispatchEvent(new Event('submit'));
+}
+
+function getStyle(feature) {
+    return {
+        color: colours.hasOwnProperty(feature.properties.id) ? colours[feature.properties.id] : '#3388ff',
+        fillColor: colours.hasOwnProperty(feature.properties.id) ? colours[feature.properties.id] : '#3388ff',
+
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.2
+    }
 }
 
 function getData(event) {
@@ -45,11 +60,17 @@ function getData(event) {
     fetch(window.location.protocol + '//' + window.location.host + '/data?' + urlParams)
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             map.removeLayer(geoJsonLayer);
-            geoJsonLayer = L.geoJSON(data, {
+            geoJsonLayer = L.geoJSON(JSON.parse(data.data), {
                 onEachFeature: function (feature, layer) {
-                    layer.bindPopup(feature.properties.name);
-                }
+                    if(feature.properties.targetStatistic !== undefined){
+                        layer.bindPopup(`${feature.properties.name} - ${feature.properties.targetStatistic}`)
+                    } else {
+                        layer.bindPopup(feature.properties.name);
+                    }
+                },
+                style: getStyle,
             }).addTo(map);
             document.getElementById('submitButton').value = 'Update';
         })
