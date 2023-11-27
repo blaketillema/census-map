@@ -63,6 +63,11 @@ fieldset > input:disabled + label {
     background-color: lightgray;
 }
 
+select {
+    width: 100vw;
+    max-width: 100vw;
+}
+
 main { 
     flex: 4;
     display: flex;

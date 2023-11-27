@@ -5,7 +5,7 @@ var colours = {}
 window.onload = function() {
     initMap();
     onClicks();
-    initialLoad();
+    // initialLoad();
 }
 
 function initMap() {
@@ -44,10 +44,9 @@ function getStyle(feature) {
     return {
         color: colour,
         fillColor: colour,
-
         weight: 0.3,
         opacity: 1,
-        fillOpacity: opacity
+        fillOpacity: opacity * 0.8
     }
 }
 
