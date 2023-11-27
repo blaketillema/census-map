@@ -44,9 +44,9 @@ function getStyle(feature) {
     return {
         color: colour,
         fillColor: colour,
-        weight: 0.3,
+        weight: 0.8,
         opacity: 1,
-        fillOpacity: opacity * 0.8
+        fillOpacity: opacity * 0.8 + 0.2
     }
 }
 
