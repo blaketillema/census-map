@@ -3,6 +3,7 @@ A simple Flask app that serves a map using leaflet.js and ABS census data for 20
 Data has been sourced from [ABS](https://www.abs.gov.au).   
 
 ## TODO  
+0. Refactor.  
 1. Compress and dump data CSVs to pickles.
 2. ~~Get colour working.~~  
 3. ~~Fix some fields having incorrect tables in the HTML.~~
