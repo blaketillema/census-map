@@ -1,6 +1,8 @@
-import matplotlib.pyplot as plt
+import pandas as pd
 
 from flask import Flask, render_template, request
+from geopandas import GeoDataFrame
+from matplotlib import colormaps
 from matplotlib.colors import Normalize
 
 from abs_data.data import column_metadata, short_to_long
@@ -9,6 +11,7 @@ from abs_data import gis
 
 
 app = Flask(__name__)
+
 
 levels = {
     'AUS': {
@@ -100,7 +103,7 @@ def metadata():
 
 def get_geojson(level: str, state_list: list[str], statistic: str | None):
 
-    requested_map = levels[level.upper()]['map']
+    requested_map: GeoDataFrame = levels[level.upper()]['map']
     columns = requested_map.columns.copy()
 
     if state_list and level != 'AUS':
@@ -133,10 +136,14 @@ def get_geojson(level: str, state_list: list[str], statistic: str | None):
     colour_map = {}
     if statistic:
         column_mapper[field] = 'targetStatistic'
-        # min_stat, max_stat = min(out), max(out)
-        # cmap = plt.cm.get_cmap('Spectral')
-        # norm = Normalize(min_stat, max_stat)
-        # colour_map = out[field].map(norm).to_dict()
+        min_stat, max_stat = min(out[field]), max(out[field])
+        cmap = colormaps.get_cmap('plasma')
+        norm = Normalize(min_stat, max_stat)
+        normalised = out.set_index(f'{level.upper()}_CODE21')[field].map(norm)
+        colours = normalised.map(cmap)
+        colours_df = pd.merge(normalised, colours, left_index=True, right_index=True)
+        colours_df.columns = ['norm', 'colour']
+        colour_map = colours_df.to_dict(orient='index')
 
     return {'data': out.rename(columns=column_mapper).to_json(), 'colours': colour_map}
 

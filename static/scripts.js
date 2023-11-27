@@ -37,13 +37,17 @@ function initialLoad() {
 }
 
 function getStyle(feature) {
+    let colour = colours.hasOwnProperty(feature.properties.code) ?
+        `rgb(${colours[feature.properties.code].colour.map((channel) => channel * 255.0).slice(0, 3).join(',')})` :
+        '#3388ff'
+    let opacity = colours.hasOwnProperty(feature.properties.code) ? colours[feature.properties.code].norm : 0.2
     return {
-        color: colours.hasOwnProperty(feature.properties.id) ? colours[feature.properties.id] : '#3388ff',
-        fillColor: colours.hasOwnProperty(feature.properties.id) ? colours[feature.properties.id] : '#3388ff',
+        color: colour,
+        fillColor: colour,
 
-        weight: 2,
+        weight: 0.3,
         opacity: 1,
-        fillOpacity: 0.2
+        fillOpacity: opacity
     }
 }
 
@@ -61,6 +65,7 @@ function getData(event) {
         .then(response => response.json())
         .then(data => {
             console.log(data)
+            colours = data.colours;
             map.removeLayer(geoJsonLayer);
             geoJsonLayer = L.geoJSON(JSON.parse(data.data), {
                 onEachFeature: function (feature, layer) {

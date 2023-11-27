@@ -12,7 +12,7 @@ table_names = pd.read_excel(
 )
 
 def short_to_long(idx):
-    table, subgroup = idx[:3], idx[4:5]
+    table, subgroup = idx[:3], idx[3:4]
     replacement = table_names.loc[table, 'Table name']
     if subgroup:
         return '{} ({})'.format(replacement, subgroup)
