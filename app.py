@@ -73,7 +73,7 @@ def get_data():
     
     statistic = request.args.get('statistic')
     if statistic:
-        table, field = statistic.split(':')
+        table, field = ':'.join(statistic.split(':')[:-1]), statistic.split(':')[-1]
         if table not in datapacks:
             return "{} not a valid table name {{}}".format(table, datapacks.keys())
         if field not in datapacks[table]:
@@ -85,7 +85,7 @@ def get_data():
 @app.route('/test')
 def metadata():
     statistic = 'P01:Tot_P_M'
-    table, field = statistic.split(':')
+    table, field = ':'.join(statistic.split(':')[:-1]), statistic.split(':')[-1]
     requested_map = levels['AUS']['map']
     requested_df = levels['AUS']['data'][table]
     joined = requested_map.merge(
@@ -108,7 +108,7 @@ def get_geojson(level: str, state_list: list[str], statistic: str | None):
 
     if state_list and level != 'AUS':
         if statistic:
-            table, field = statistic.split(':')
+            table, field = ':'.join(statistic.split(':')[:-1]), statistic.split(':')[-1]
             requested_df = levels[level.upper()]['data'][table]
             out = requested_map[
                 requested_map['STE_CODE21'].isin([states[state] for state in state_list])
@@ -121,7 +121,7 @@ def get_geojson(level: str, state_list: list[str], statistic: str | None):
             ]
     else:
         if statistic:
-            table, field = statistic.split(':')
+            table, field = ':'.join(statistic.split(':')[:-1]), statistic.split(':')[-1]
             requested_df = levels[level.upper()]['data'][table]
             out = requested_map.merge(
                 requested_df, left_on=columns[0], right_on=requested_df.columns[0]
