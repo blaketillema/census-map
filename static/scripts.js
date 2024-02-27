@@ -61,9 +61,11 @@ function getData(event) {
     let urlParams = formEntries.map(e => e[0] + '=' + e[1]).join('&');
 
     fetch(window.location.protocol + '//' + window.location.host + '/data?' + urlParams)
-        .then(response => response.json())
+        .then(response => {
+            console.log(response);
+            return response.json()
+        })
         .then(data => {
-            console.log(data)
             colours = data.colours;
             map.removeLayer(geoJsonLayer);
             geoJsonLayer = L.geoJSON(JSON.parse(data.data), {

@@ -67,3 +67,22 @@ STE = {
     pd.read_csv(os.path.join('abs_data/data/data/STE/AUS', file))
     for file in os.listdir('abs_data/data/data/STE/AUS')
 }
+
+CED = {
+    short_to_long(re.match(r'2021Census_(?P<table>P\d{2}\w{0,1})_AUST_CED\.csv', file).group('table'))
+    :
+    pd.read_csv(os.path.join('abs_data/data/data/CED/AUS', file))
+    for file in os.listdir('abs_data/data/data/CED/AUS')
+}
+for table in CED:
+    CED[table]['CED_CODE_2021'].replace('CED', '', inplace=True, regex=True)
+
+
+SAL = {
+    short_to_long(re.match(r'2021Census_(?P<table>P\d{2}\w{0,1})_AUST_SAL\.csv', file).group('table'))
+    :
+    pd.read_csv(os.path.join('abs_data/data/data/SAL/AUS', file))
+    for file in os.listdir('abs_data/data/data/SAL/AUS')
+}
+for table in SAL:
+    SAL[table]['SAL_CODE_2021'].replace('SAL', '', inplace=True, regex=True)

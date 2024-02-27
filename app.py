@@ -4,6 +4,7 @@ from flask import Flask, render_template, request
 from geopandas import GeoDataFrame
 from matplotlib import colormaps
 from matplotlib.colors import Normalize
+from typing import Literal
 
 from abs_data.data import column_metadata, short_to_long
 from abs_data import data
@@ -38,6 +39,14 @@ levels = {
         'map': gis.STE,
         'data': data.STE
     },
+    'CED': {
+        'map': gis.CED,
+        'data': data.CED
+    },
+    'SAL': {
+        'map': gis.SAL,
+        'data': data.SAL
+    }
 }
 
 states = {
@@ -79,7 +88,11 @@ def get_data():
         if field not in datapacks[table]:
             return "{} not a valid field of {} {{}}".format(field, table, datapacks[table].keys())
     
-    return get_geojson(level, state_list, statistic)
+    function = request.args.get('function')
+    if function and function not in ['normalise', 'density']:
+        return "{} not a valid function {{}}".format(function, ['normalise', 'density'])
+
+    return get_geojson(level, state_list, statistic, function)
 
 
 @app.route('/test')
@@ -101,7 +114,7 @@ def metadata():
     return out
 
 
-def get_geojson(level: str, state_list: list[str], statistic: str | None):
+def get_geojson(level: str, state_list: list[str], statistic: str | None, function: Literal['normalise', 'density'] | None = None):
 
     requested_map: GeoDataFrame = levels[level.upper()]['map']
     columns = requested_map.columns.copy()
@@ -129,6 +142,12 @@ def get_geojson(level: str, state_list: list[str], statistic: str | None):
         else:
             out = requested_map
     
+    if function == 'density':
+        if state_list and level != 'AUS':
+            out[field] /= requested_map[requested_map['STE_CODE21'].isin([states[state] for state in state_list])]['AREASQKM21']
+        else:
+            out[field] /= requested_map['AREASQKM21']
+
     column_mapper = {
         f'{level.upper()}_CODE21': 'code',
         f'{level.upper() if level.upper() != "SA1" else "SA2"}_NAME21': 'name',
@@ -144,6 +163,7 @@ def get_geojson(level: str, state_list: list[str], statistic: str | None):
         colours_df = pd.merge(normalised, colours, left_index=True, right_index=True)
         colours_df.columns = ['norm', 'colour']
         colour_map = colours_df.to_dict(orient='index')
+
 
     return {'data': out.rename(columns=column_mapper).to_json(), 'colours': colour_map}
 
