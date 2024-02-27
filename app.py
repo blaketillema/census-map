@@ -15,34 +15,34 @@ app = Flask(__name__)
 
 
 levels = {
-    # 'AUS': {
-    #     'map': gis.AUS,
-    #     'data': data.AUS
-    # },
-    # 'SA1': {
-    #     'map': gis.SA1,
-    #     'data': data.SA1
-    # },
-    # 'SA2': {
-    #     'map': gis.SA2,
-    #     'data': data.SA2
-    # },
-    # 'SA3': {
-    #     'map': gis.SA3,
-    #     'data': data.SA3
-    # },
-    # 'SA4': {
-    #     'map': gis.SA4,
-    #     'data': data.SA4
-    # },
-    # 'STE': {
-    #     'map': gis.STE,
-    #     'data': data.STE
-    # },
-    # 'CED': {
-    #     'map': gis.CED,
-    #     'data': data.CED
-    # },
+    'AUS': {
+        'map': gis.AUS,
+        'data': data.AUS
+    },
+    'SA1': {
+        'map': gis.SA1,
+        'data': data.SA1
+    },
+    'SA2': {
+        'map': gis.SA2,
+        'data': data.SA2
+    },
+    'SA3': {
+        'map': gis.SA3,
+        'data': data.SA3
+    },
+    'SA4': {
+        'map': gis.SA4,
+        'data': data.SA4
+    },
+    'STE': {
+        'map': gis.STE,
+        'data': data.STE
+    },
+    'CED': {
+        'map': gis.CED,
+        'data': data.CED
+    },
     'SAL': {
         'map': gis.SAL,
         'data': data.SAL
@@ -144,10 +144,16 @@ def get_geojson(level: str, state_list: list[str], statistic: str | None, functi
             out = requested_map
     
     if function == 'density':
-        if state_list and level != 'AUS':
-            out[field] = out[field].divide(requested_map[requested_map['STE_CODE21'].isin([states[state] for state in state_list])]['AREASQKM21'].values, axis='rows')
+        temp = pd.DataFrame()
+        temp[field] = out[field]
+        level_key = f'{level.upper()}_CODE21'
+        temp[level_key] = out[level_key]
+        if level_key == 'STE_CODE21':
+            temp = temp.merge(requested_map[['STE_CODE21', 'AREASQKM21']], left_on=level_key, right_on=level_key)
         else:
-            out[field] = out[field].divide(requested_map['AREASQKM21'].values, axis='rows')
+            temp = temp.merge(requested_map[[level_key, 'STE_CODE21', 'AREASQKM21']], left_on=level_key, right_on=level_key)
+        temp[field] = temp[field].divide(temp['AREASQKM21'], axis='rows')
+        out[field] = temp[field]
 
     column_mapper = {
         f'{level.upper()}_CODE21': 'code',
