@@ -19,10 +19,10 @@ levels = {
         'map': gis.AUS,
         'data': data.AUS
     },
-    'SA1': {
-        'map': gis.SA1,
-        'data': data.SA1
-    },
+    # 'SA1': {
+    #     'map': gis.SA1,
+    #     'data': data.SA1
+    # },
     'SA2': {
         'map': gis.SA2,
         'data': data.SA2
@@ -157,7 +157,7 @@ def get_geojson(level: str, state_list: list[str], statistic: str | None, functi
 
     column_mapper = {
         f'{level.upper()}_CODE21': 'code',
-        f'{level.upper() if level.upper() != "SA1" else "SA2"}_NAME21': 'name',
+        f'{level.upper()}_NAME21': 'name',
     }
     colour_map = {}
     if statistic:

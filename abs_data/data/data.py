@@ -33,12 +33,12 @@ AUS = {
     for file in os.listdir('abs_data/data/data/AUS')
 }
 
-SA1 = {
-    short_to_long(re.match(r'2021Census_(?P<table>P\d{2}\w{0,1})_AUST_SA1\.csv', file).group('table'))
-    :
-    pd.read_csv(os.path.join('abs_data/data/data/SA1/AUS', file))
-    for file in os.listdir('abs_data/data/data/SA1/AUS')
-}
+# SA1 = {
+#     short_to_long(re.match(r'2021Census_(?P<table>P\d{2}\w{0,1})_AUST_SA1\.csv', file).group('table'))
+#     :
+#     pd.read_csv(os.path.join('abs_data/data/data/SA1/AUS', file))
+#     for file in os.listdir('abs_data/data/data/SA1/AUS')
+# }
 
 SA2 = {
     short_to_long(re.match(r'2021Census_(?P<table>P\d{2}\w{0,1})_AUST_SA2\.csv', file).group('table'))
